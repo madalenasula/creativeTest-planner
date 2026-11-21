@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f1eb">
+  <meta name="description" content="Turn a creative observation into a clear, falsifiable marketing experiment. A small product for better creative decisions.">
+  <title>Creative Test Planner — Made to test.</title>
+  <style>
+    :root { --paper:#f6f1eb; --ink:#2a2926; --muted:#766f6c; --aubergine:#633b51; --aubergine-dark:#4b2d3d; --dust:#dfb8b0; --blush:#f1dfd8; --sage:#798574; --line:#dfd6cf; --white:#fffdf9; --shadow:0 16px 45px rgba(60,42,49,.09); }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; -webkit-font-smoothing:antialiased; }
+    button,input,select,textarea { font:inherit; }
+    button { cursor:pointer; }
+    button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible { outline:3px solid #a76984; outline-offset:3px; }
+    .shell { max-width:1300px; margin:auto; padding:0 44px; }
+    header { height:86px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; gap:24px; }
+    .wordmark { font-weight:800; letter-spacing:-.065em; font-size:23px; text-decoration:none; color:var(--ink); white-space:nowrap; }
+    .wordmark span { color:var(--aubergine); }
+    .nav-right { display:flex; align-items:center; gap:13px; color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.11em; }
+    .nav-right .dot { width:9px; height:9px; background:var(--sage); border-radius:50%; }
+    .hero { display:flex; justify-content:space-between; align-items:flex-end; gap:35px; padding:58px 0 51px; }
+    .eyebrow { text-transform:uppercase; letter-spacing:.18em; font-size:11px; font-weight:700; color:var(--aubergine); }
+    .hero h1 { margin:14px 0 13px; max-width:850px; font:normal clamp(55px,6.5vw,100px)/.96 Georgia,"Times New Roman",serif; letter-spacing:-.07em; }
+    .hero h1 em { font-weight:400; color:var(--aubergine); }
+    .hero p { max-width:610px; font-size:16px; line-height:1.65; color:var(--muted); margin:22px 0 0; }
+    .hero-stamp { flex:0 0 140px; width:140px; height:140px; border-radius:50%; border:1px solid #b999a7; display:flex; align-items:center; justify-content:center; text-align:center; transform:rotate(12deg); position:relative; color:var(--aubergine); font-weight:800; font-size:12px; letter-spacing:.12em; line-height:1.6; text-transform:uppercase; margin-bottom:5px; }
+    .hero-stamp:after { content:"✳"; position:absolute; top:-18px; right:1px; font-size:32px; color:#b37b82; }
+    .workspace-label { display:flex; justify-content:space-between; align-items:center; gap:16px; border-top:1px solid var(--line); padding:18px 0; font-size:11px; text-transform:uppercase; font-weight:700; letter-spacing:.15em; }
+    .workspace-label span:last-child { color:var(--muted); font-weight:500; }
+    .workspace { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:20px; align-items:start; }
+    .editor,.blueprint { min-width:0; border:1px solid var(--line); border-radius:13px; overflow:hidden; }
+    .editor { background:var(--white); }
+    .blueprint { background:#ead4cd; }
+    .panel-head { padding:29px 31px 21px; display:flex; justify-content:space-between; align-items:start; gap:16px; }
+    .panel-kicker { font-size:11px; letter-spacing:.15em; text-transform:uppercase; color:var(--aubergine); font-weight:800; }
+    .panel-head h2 { margin:9px 0 0; font:normal 34px/1.12 Georgia,"Times New Roman",serif; letter-spacing:-.04em; }
+    .text-button { background:transparent; border:0; padding:7px 0; color:var(--aubergine); font-size:12px; font-weight:750; white-space:nowrap; text-decoration:underline; text-underline-offset:4px; }
+    form { padding:0 31px 29px; }
+    .field { margin-bottom:18px; }
+    .field label { display:block; font-size:12px; font-weight:700; color:#544b4d; margin-bottom:8px; }
+    .field small { display:block; color:var(--muted); font-size:11px; font-weight:400; margin-top:3px; }
+    input, select, textarea { display:block; width:100%; border:1px solid #d9d0cb; border-radius:6px; background:#fffdfa; color:var(--ink); padding:11px 12px; outline:0; font-size:13px; transition:border .15s,box-shadow .15s; }
+    input:focus, select:focus, textarea:focus { border-color:#956c7d; box-shadow:0 0 0 3px #956c7d25; }
+    textarea { resize:vertical; min-height:88px; }
+    ::placeholder { color:#a49b96; }
+    .field-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .field-row.ratio { grid-template-columns:1.4fr .6fr; }
+    .section-rule { border:0; border-top:1px solid var(--line); margin:24px 0 20px; }
+    .mini-heading { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0 0 14px; }
+    .mini-heading h3 { margin:0; font:normal 22px/1.15 Georgia,"Times New Roman",serif; }
+    .mini-heading span { text-transform:uppercase; letter-spacing:.12em; font-size:10px; color:var(--muted); }
+    details { border:1px dashed #cdbfbd; border-radius:7px; padding:12px 14px; background:#fcfaf7; margin-bottom:20px; }
+    summary { cursor:pointer; font-weight:700; font-size:12px; color:var(--aubergine); }
+    details .inner { padding-top:16px; }
+    .primary { display:inline-flex; align-items:center; justify-content:center; gap:12px; padding:14px 19px; border-radius:6px; background:var(--aubergine); border:1px solid var(--aubergine); color:#fff; font-size:13px; font-weight:750; transition:background .15s,transform .15s; }
+    .primary:hover { background:var(--aubergine-dark); transform:translateY(-1px); }
+    .primary span { font-size:18px; line-height:1; }
+    .primary.block { width:100%; }
+    .form-footnote { display:flex; gap:8px; align-items:flex-start; margin-top:14px; color:#867b78; font-size:11px; }
+    .form-footnote svg { flex-shrink:0; margin-top:2px; }
+    .blueprint-top { padding:29px 30px 15px; display:flex; justify-content:space-between; align-items:flex-start; }
+    .id-tag { font-size:11px; color:#6c4e5b; text-transform:uppercase; letter-spacing:.14em; font-weight:800; }
+    .status { display:flex; gap:7px; align-items:center; font-size:10px; text-transform:uppercase; letter-spacing:.1em; color:#4d5b4c; font-weight:750; }
+    .status:before { content:""; height:7px; width:7px; border-radius:50%; background:#778670; }
+    .blueprint-body { padding:0 30px 28px; }
+    .blueprint-title { font:normal 42px/1.06 Georgia,"Times New Roman",serif; letter-spacing:-.05em; margin:17px 0 21px; }
+    .test-card { background:rgba(255,253,250,.87); border:1px solid #dbc7c4; border-radius:9px; padding:18px; margin:13px 0; }
+    .card-label { margin:0 0 10px; text-transform:uppercase; font-size:10px; letter-spacing:.12em; font-weight:800; color:#775569; }
+    .hypothesis { font:normal 20px/1.46 Georgia,"Times New Roman",serif; overflow-wrap:anywhere; }
+    .hypothesis strong { color:var(--aubergine); font-weight:normal; font-style:italic; }
+    .ad-grid { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+    .ad { padding:18px 15px; background:var(--white); border:1px solid #d6bdbb; border-radius:7px; min-height:117px; }
+    .ad.variant { background:#e0e6d9; border-color:#b5c4ac; }
+    .ad .letter { display:inline-block; padding:3px 7px; background:#f3ede8; font-size:9px; letter-spacing:.11em; font-weight:800; color:#765e67; border-radius:3px; margin-bottom:12px; }
+    .ad.variant .letter { background:#c6d4bd; color:#41563f; }
+    .ad p { margin:0; line-height:1.5; font-size:13px; overflow-wrap:anywhere; }
+    .score { display:flex; justify-content:space-between; gap:16px; padding:10px 0; border-bottom:1px solid #e0d1cc; }
+    .score:last-child { border:0; padding-bottom:0; }
+    .score span { color:#776970; font-size:12px; }
+    .score strong { text-align:right; font-size:12px; max-width:60%; }
+    .protocol { margin:0; padding-left:19px; }
+    .protocol li { padding-left:4px; margin:0 0 10px; font-size:12px; line-height:1.6; }
+    .protocol li:last-child { margin:0; }
+    .method-note { margin:16px 1px 0; font-size:11px; color:#755d63; line-height:1.6; }
+    .blueprint-footer { background:#e2c6bd; border-top:1px solid #d4b9b2; padding:18px 30px; display:flex; gap:9px; flex-wrap:wrap; }
+    .outline { padding:11px 14px; border:1px solid #936b79; color:#583a4b; background:transparent; font-size:12px; font-weight:750; border-radius:5px; }
+    .outline:hover { background:#f7ece8; }
+    button:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+    footer { padding:48px 0 36px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:14px; font-size:11px; color:var(--muted); }
+    footer strong { color:var(--aubergine); }
+    #toast { position:fixed; bottom:26px; right:26px; background:var(--ink); color:white; border-radius:7px; padding:12px 16px; box-shadow:var(--shadow); font-size:13px; opacity:0; transform:translateY(10px); pointer-events:none; transition:opacity .2s, transform .2s; z-index:5; }
+    #toast.show { opacity:1; transform:translateY(0); }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <a class="wordmark" href="#top" aria-label="Creative Test Planner home">m<span>/</span>s. <span style="font-weight:400;letter-spacing:-.05em">studio</span></a>
+      <div class="nav-right"><span class="dot" aria-hidden="true"></span><span>Independent product / 002</span></div>
+    </header>
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-heading">
+        <div>
+          <div class="eyebrow">A little lab for better marketing</div>
+          <h1 id="hero-heading">Make the hunch<br><em>testable.</em></h1>
+          <p>A creative observation is a starting point, not a strategy. Turn what you notice into a focused A/B experiment with one variable, a clear metric and a decision rule.</p>
+        </div>
+        <div class="hero-stamp" aria-hidden="true">observe<br>→<br>experiment</div>
+      </section>
+      <div class="workspace-label"><span>02 / Creative Test Planner</span><span>From observation to experiment · No sign-in needed</span></div>
+      <div class="workspace">
+        <section class="editor" aria-labelledby="input-heading">
+          <div class="panel-head"><div><div class="panel-kicker">01 / Capture the insight</div><h2 id="input-heading">What's the idea?</h2></div><button class="text-button" type="button" id="demoBtn">Load example ↗</button></div>
+          <form id="testForm">
+            <div class="field"><label for="observation">What did you notice?</label><textarea id="observation" required maxlength="900" placeholder="e.g. Beauty creators who show product texture seem to attract more questions than polished packshots."></textarea></div>
+            <div class="field-row"><div class="field"><label for="audience">Who are we testing?</label><input id="audience" required maxlength="160" placeholder="e.g. Skincare shoppers aged 18–34"></div><div class="field"><label for="channel">Where?</label><select id="channel"><option>Instagram / Meta</option><option>TikTok</option><option>YouTube</option><option>Google Display</option><option>Landing page</option><option>Email</option><option>Other channel</option></select></div></div>
+            <hr class="section-rule">
+            <div class="mini-heading"><h3>Design the comparison</h3><span>One variable only</span></div>
+            <div class="field"><label for="variable">What changes?</label><select id="variable"><option>Visual / imagery</option><option>Opening hook</option><option>Message framing</option><option>Social proof</option><option>Call to action</option><option>Offer presentation</option><option>Format</option></select></div>
+            <div class="field-row"><div class="field"><label for="control">A · Current creative</label><textarea id="control" required maxlength="300" placeholder="e.g. Static product image"></textarea></div><div class="field"><label for="variant">B · New creative</label><textarea id="variant" required maxlength="300" placeholder="e.g. Texture close-up video"></textarea></div></div>
+            <div class="field"><label for="mechanism">Why might this work?</label><input id="mechanism" maxlength="320" placeholder="e.g. Texture demonstrates the product's feel"></div>
+            <div class="field-row ratio"><div class="field"><label for="metric">Primary metric</label><select id="metric"><option>Click-through rate</option><option>Conversion rate</option><option>Landing-page view rate</option><option>Add-to-cart rate</option><option>Video completion rate</option><option>Email click rate</option><option>Engagement rate</option></select></div><div class="field"><label for="lift">Minimum lift (%) <small>Relative improvement target</small></label><input type="number" id="lift" min="1" max="500" value="10" step="1" required></div></div>
+            <details><summary>Optional: test guardrail</summary><div class="inner"><div class="field" style="margin-bottom:0"><label for="guardrail">What must not get worse?</label><input id="guardrail" maxlength="160" placeholder="e.g. Cost per qualified visit"></div></div></details>
+            <button class="primary block" type="submit">Build my experiment <span aria-hidden="true">↗</span></button>
+            <div class="form-footnote"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/><path d="m9 12 2 2 4-4"/></svg><span>Private by default: inputs stay in your browser. No account, tracking or AI API.</span></div>
+          </form>
+        </section>
+        <section class="blueprint" id="experiment" aria-labelledby="output-heading">
+          <div class="blueprint-top"><div class="id-tag">02 / Experiment blueprint</div><div class="status" id="draftStatus">Illustrative draft</div></div>
+          <div class="blueprint-body">
+            <h2 class="blueprint-title" id="output-heading">The idea, with<br>a test behind it.</h2>
+            <div class="test-card"><div class="card-label">Working hypothesis</div><div id="hypothesisText" class="hypothesis" aria-live="polite"></div></div>
+            <div class="ad-grid"><div class="ad"><span class="letter">A / CONTROL</span><p id="controlText"></p></div><div class="ad variant"><span class="letter">B / VARIANT</span><p id="variantText"></p></div></div>
+            <div class="test-card"><div class="card-label">Measurement</div><div class="score"><span>Primary KPI</span><strong id="metricText"></strong></div><div class="score"><span>Minimum meaningful lift</span><strong id="liftText"></strong></div><div class="score"><span>Guardrail</span><strong id="guardrailText"></strong></div><div class="score"><span>Audience · channel</span><strong id="audienceText"></strong></div></div>
+            <div class="test-card"><div class="card-label">How to run it</div><ol class="protocol"><li>Randomly split eligible users between A and B, where the platform supports a proper experiment.</li><li>Hold audience, placement, timing, spend, copy and other creative elements constant. Change <strong id="variableText"></strong> only.</li><li>Before launch, define a realistic duration and required sample size. Judge the result against the primary metric and guardrail.</li></ol></div>
+            <p class="method-note"><strong>Decision rule:</strong> Adopt B only if it exceeds the predefined lift threshold, the guardrail is acceptable, and evidence is sufficient. Otherwise record the result as inconclusive or unsuccessful. This planner does not calculate statistical significance.</p>
+          </div>
+        </section>
+      </div>
+    </main>
+    <footer><span><strong>m/s. studio</strong> · Independent experiments in product × marketing.</span><span>Built for learning. Not a statistical testing platform. · MVP</span></footer>
+  </div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script>
+    'use strict';
+    const $ = id => document.getElementById(id);
+    const fieldIds = ['observation','audience','channel','variable','control','variant','mechanism','metric','lift','guardrail'];
+    const demo = {
+      observation:'In skincare creative, close-up still images of product texture seem to prompt questions about how a formula feels. Could a tactile visual increase curiosity?',
+      audience:'Skincare shoppers aged 18–34', channel:'Instagram / Meta', variable:'Visual / imagery',
+      control:'Studio packshot image against a neutral backdrop', variant:'Macro still image showing product texture on skin',
+      mechanism:'seeing texture may reduce uncertainty and make the product feel more tangible',
+      metric:'Click-through rate', lift:'10', guardrail:'Cost per landing-page view'
+    };
+    let current = {...demo};
+    let toastTimer;
+    function fieldValues(){const x={};for(const id of fieldIds)x[id]=$(id).value.trim();return x;}
+    function fillForm(data){for(const id of fieldIds)$(id).value=data[id] ?? '';}
+    function safeText(id,value){$(id).textContent=value;}
+    function buildHypothesis(d){
+      const line = document.createElement('span');
+      line.append('For ',d.audience,' on ',d.channel,', replacing ',d.control,' with ',d.variant,' will ');
+      const highlight=document.createElement('strong'); highlight.textContent=`increase ${d.metric.toLowerCase()} by at least ${d.lift}% relative`;
+      line.append(highlight,'.');
+      if(d.mechanism)line.append(' We expect this because ',d.mechanism.replace(/[.\s]+$/,''),'.');
+      return line;
+    }
+    function render(d, illustrative=false){
+      current={...d};
+      $('hypothesisText').replaceChildren(buildHypothesis(d));
+      safeText('controlText',d.control); safeText('variantText',d.variant);
+      safeText('metricText',d.metric); safeText('liftText',`${d.lift}% relative improvement vs A`);
+      safeText('guardrailText',d.guardrail||'Define before launch');
+      safeText('audienceText',`${d.audience} · ${d.channel}`);
+      safeText('variableText',d.variable.toLowerCase());
+      safeText('draftStatus',illustrative?'Illustrative draft':'Ready to review');
+    }
+    function validate(d){
+      if(!d.observation||!d.audience||!d.control||!d.variant){toast('Complete the observation, audience and A/B creative fields.');return false;}
+      if(d.control.toLowerCase()===d.variant.toLowerCase()){toast('A and B need to be different.');return false;}
+      const lift=Number(d.lift);
+      if(!Number.isFinite(lift)||lift<1||lift>500){toast('Choose a lift target from 1% to 500%.');return false;}
+      return true;
+    }
+    function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),3000)}
+    $('testForm').addEventListener('input',()=>safeText('draftStatus','Rebuild to update'));
+    $('demoBtn').addEventListener('click',()=>{fillForm(demo);render(demo,true);toast('Illustrative skincare example loaded.');});
+    $('testForm').addEventListener('submit',e=>{e.preventDefault();const d=fieldValues();if(!validate(d))return;render(d);toast('Experiment blueprint updated.');if(window.innerWidth<781)$('experiment').scrollIntoView({behavior:'smooth',block:'start'});});
+    fillForm(demo);render(demo,true);
+  </script>
+</body>
+</html>
