@@ -17,3 +17,4 @@ Make the hunch testable. HTML/CSS/JavaScript app which turns marketing observati
 2. Save experiments locally, copy/export briefs, improve mobile layout
 
 **Limitations:** The lift target is a practical threshold, not a statistical significance calculation.
+Experiment: Every creative test should start with a clear observation, isolate one meaningful variable, define a measurable hypothesis, and specify how results will inform the next decision.
